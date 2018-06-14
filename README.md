@@ -20,6 +20,25 @@ Summary: in the open source version, the following features **are not available*
     - No Public Key Infrastructure w/ Custom CA.
 - Support for emergency patching.
 
+## Nodes distribution
+
+Node         | Description
+-------------|-------------------------------
+lxcm02       | DC/OS bootstrap node
+lxzk0[1,2,3] | Master/Zookeeper nodes
+lxb00[1,2,3] | Slave nodes
+
+In order to avoid troubles with Zookeeper (especially while restarting the master nodes) or be able to deploy jobs managed by the Marathon scheduler it is **highly recommended** to have VMs with a minimum of 8 Gb of RAM. A complete list of requirements is available on the [DC/OS documentation](https://docs.mesosphere.com/1.11/installing/oss/custom/system-requirements/). The list include how to setup Docker correctly with specific settings, how to __isolate__ the directories on the masters or the agents for better I/O performances, in particular for cluster with potentially thousands of nodes.
+
+## Endpoint Services
+
+Node         |       Description    | Link
+-------------|----------------------|-----------------
+lxzk0[1,2,3] |  Zookeeper Exhibitor | http://10.1.1.49:8181/exhibitor/v1/ui/index.html
+lxzk0[1,2,3] |  DC/OS Web Dashboard | http://10.1.1.49
+
+__Note__: the DC/OS dashboard and the Zookeeper Exhibitor are reachable on all the master nodes.
+
 ## Installation
 
 According to ['System Requirements'](https://docs.mesosphere.com/1.11/installing/oss/custom/system-requirements/), all the nodes part of the Mesos cluster should have the following prerequisites:
@@ -29,7 +48,7 @@ According to ['System Requirements'](https://docs.mesosphere.com/1.11/installing
 * On RHEL 7 and CentOS 7, __firewalld__ must be stopped and disabled.
 * __NTP__ has to be enabled.
 
-Follow the steps described [here ('Advanced DCOS installation procedure for the open source version)'](https://docs.mesosphere.com/1.11/installing/oss/custom/advanced/): there will be a __bootstrap__ node, which will be used to jumpstart the installation of the nodes on the cluster (master or agents).
+Follow the steps described [here ('Advanced DCOS installation procedure for the open source version)'](https://docs.mesosphere.com/1.11/installing/oss/custom/advanced/): there will be a __bootstrap__ node, which will be used to jumpstart the installation of the nodes on the cluster (master or agents). Additional examples for the Mesos cluster configuration file are available [here](https://docs.mesosphere.com/1.11/installing/ent/custom/configuration/examples/).
 
 Start to configure the bootstrap node: use the files under the ``genconf`` subdirectory on this repo:
 
@@ -38,6 +57,7 @@ Start to configure the bootstrap node: use the files under the ``genconf`` subdi
 3. Launch the installer: ``bash dcos_generate_config.sh`` (**NOTE**: Docker should be already installed and running before this step).
 4. Run the Docker container which will use NGINX to serve the DC/OS installation: ``docker run -d -p 8080:80 -v $PWD/genconf/serve:/usr/share/nginx/html:ro nginx``
 
+Refer to the [documentation](https://docs.mesosphere.com/1.11/installing/oss/custom/configuration/configuration-parameters) to get an idea about the parameters used in the ``genconf/cluster.yaml``. **NOTE**: one or more wrongly configured paramters will affect the correct functioning of the master or the agent nodes. In this case the nodes have to be **wiped** and the procedure to create and serve the DC/OS components from the bootstrap node has to be __restarted from scratch__.
 
 Start the installation procedure on a node which is meant to join the cluster (broken down in three steps):
 
@@ -52,7 +72,7 @@ Start the installation procedure on a node which is meant to join the cluster (b
     yum -y install docker-ce ; systemctl enable docker.service && systemctl start docker.service
 ```
 
-IPtables status after Docker is installed and firewalld disabled (output adjusted to be more clear):
+IPtables status after Docker is installed and firewalld is disabled (output adjusted to be more clear):
 ```bash
 >>> iptables -VNL
 Chain INPUT (policy ACCEPT 29 packets, 2795 bytes)
@@ -89,6 +109,8 @@ Chain DOCKER-USER (1 references)
 ```
 
 **NOTE**: firewall issues may hamper the installation process and stop services from starting or communicating with peer nodes (e.g. Zookeeper).
+
+Additional information about DC/OS networking is available in the [docs (networking mode, load balancing, etc.)](https://docs.mesosphere.com/1.11/networking/).
 
 - Start the installer from the DCOS bootstrap node:
 
@@ -180,6 +202,36 @@ Configuring DC/OS
 Setting and starting DC/OS
 Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.service to /etc/systemd/system/dcos-setup.service.
 ```
+
+## Operations
+
+Check all the service components on the master nodes:
+```bash
+>>> journalctl -u dcos-exhibitor -b
+[...]
+>>> journalctl -u dcos-mesos-master -b
+[...]
+>>> journalctl -u dcos-mesos-dns -b
+[...]
+>>> journalctl -u dcos-marathon -b
+[...]
+>>> journalctl -u dcos-nginx -b
+[...]
+>>> journalctl -u dcos-gen-resolvconf -b
+[...]
+```
+
+Check all the service components on the slave nodes:
+```bash
+>>> journalctl -u dcos-mesos-slave -b
+[...]
+```
+
+## Troubleshooting
+
+References:
+- [DC/OS troubleshooting docs (Open Source version)](https://docs.mesosphere.com/1.11/installing/oss/troubleshooting/)
+- [DC/OS troubleshooting (DC/OS official channel on YouTube)](https://www.youtube.com/watch?v=YB2N5COpWY4)
 
 ## Uninstall DC/OS
 
