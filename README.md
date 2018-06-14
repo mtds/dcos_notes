@@ -51,6 +51,44 @@ Start the installation procedure on a node which is meant to join the cluster (b
     yum -y install docker-ce ; systemctl start docker.service
 ```
 
+IPtables status after Docker is installed and firewalld disabled (output adjusted to be more clear):
+```bash
+>>> iptables -VNL
+hain INPUT (policy ACCEPT 29 packets, 2795 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target                    prot opt in     out        source               destination         
+    0     0 DOCKER-USER               all  --  *      *          0.0.0.0/0            0.0.0.0/0           
+    0     0 DOCKER-ISOLATION-STAGE-1  all  --  *      *          0.0.0.0/0            0.0.0.0/0           
+    0     0 ACCEPT                    all  --  *      docker0    0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+    0     0 DOCKER                    all  --  *      docker0    0.0.0.0/0            0.0.0.0/0           
+    0     0 ACCEPT                    all  --  docker0 !docker0  0.0.0.0/0            0.0.0.0/0           
+    0     0 ACCEPT                    all  --  docker0 docker0   0.0.0.0/0            0.0.0.0/0           
+
+Chain OUTPUT (policy ACCEPT 16 packets, 1664 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain DOCKER (1 references)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain DOCKER-ISOLATION-STAGE-1 (1 references)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 DOCKER-ISOLATION-STAGE-2  all  --  docker0 !docker0  0.0.0.0/0            0.0.0.0/0           
+    0     0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+
+Chain DOCKER-ISOLATION-STAGE-2 (1 references)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 DROP       all  --  *      docker0  0.0.0.0/0            0.0.0.0/0           
+    0     0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+
+Chain DOCKER-USER (1 references)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0
+```
+
+**NOTE**: firewall issues may hamper the installation process and stop services from starting or communicating with peer nodes (e.g. Zookeeper).
+
 - Start the installer from the DCOS bootstrap node:
 ```bash
 >>> groupadd nogroup; mkdir /tmp/dcos && cd /tmp/dcos ; \
