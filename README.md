@@ -108,6 +108,10 @@ Setting and starting DC/OS
 Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.service to /etc/systemd/system/dcos-setup.service. 
 ```
 
+## Uninstall DC/OS
+
+According to the [official documentation](https://docs.mesosphere.com/1.11/installing/oss/custom/uninstall/): 'To remove DC/OS, you __must completely reimage the operating system on your nodes__. Uninstall will be supported in future releases.' For more information, see the following ticket: ['Create a comprehensive DC/OS uninstall'](https://jira.mesosphere.com/browse/DCOS_OSS-250).
+
 ## References
 
 * [DCOS main website](https://dcos.io/)
