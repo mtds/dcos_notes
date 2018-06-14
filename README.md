@@ -42,6 +42,7 @@ Start to configure the bootstrap node: use the files under the ``genconf`` subdi
 Start the installation procedure on a node which is meant to join the cluster (broken down in three steps):
 
 - Install dependencies for the DCOS installed and then install and start Docker:
+
 ```bash
 >>> yum -y install unzip.x86_64 ; \
     yum -y install bind-utils.x86_64; \
