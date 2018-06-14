@@ -236,9 +236,12 @@ References:
 ## Web Dashboards
 
 The following image shows the main page of a DC/OS dashboard (while a bunch of tasks are running):
+
 ![DCOS dashboard](/imgs/DCOS_Dashboard.png)
 
+
 The following image shows the Exhibitor web page for Zookeeper (available only when the cluster is up&running):
+
 ![Zookeeper Exhibitor](/imgs/Zookeeper_Exhibitor.png)
 
 ## Uninstall DC/OS
