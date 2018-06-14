@@ -48,7 +48,7 @@ Start the installation procedure on a node which is meant to join the cluster (b
     yum -y install yum-utils device-mapper-persistent-data lvm2 ; \
     yum-config-manager --add-repo  https://download.docker.com/linux/centos/docker-ce.repo ; \ 
     systemctl stop firewalld.service && systemctl disable firewalld.service; \ 
-    yum install docker-ce ; systemctl start docker.service
+    yum -y install docker-ce ; systemctl start docker.service
 ```
 
 - Start the installer from the DCOS bootstrap node:
