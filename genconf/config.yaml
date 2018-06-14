@@ -5,7 +5,7 @@ agent_list:
 - 10.1.1.15
 # Use this bootstrap_url value unless you have moved the DC/OS installer assets.
 bootstrap_url: http://10.1.1.8:8080
-cluster_name: mesos_test
+cluster_name: 'dcos_gsi'
 exhibitor_storage_backend: static
 master_discovery: static
 ip_detect_public_filename: genconf/ip-detect-public
@@ -15,9 +15,9 @@ master_list:
 - 10.1.1.51
 resolvers:
 - 10.1.1.1
-ssh_port: 22
-ssh_user: centos
+oauth_enabled: 'false'
 use_proxy: 'false'
 no_proxy:
 - '.devops.test'
 - '.gsi.de'
+
