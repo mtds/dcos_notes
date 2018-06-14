@@ -46,20 +46,24 @@ __Note__: the DC/OS dashboard and the Zookeeper Exhibitor are reachable on all t
 According to ['System Requirements'](https://docs.mesosphere.com/1.11/installing/oss/custom/system-requirements/), all the nodes part of the Mesos cluster should have the following prerequisites:
 
 * Docker must have been installed **before** starting to deploy DC/OS.
-* __SELinux__ has to be disabled or set to permissive mode.
+* __SELinux__ has to be disabled or set to __permissive__ mode.
 * On RHEL 7 and CentOS 7, __firewalld__ must be stopped and disabled.
-* __NTP__ has to be enabled.
+* __NTP__ support has to be enabled (traditional ntp client or chronyd are equivalent).
 
 Follow the steps described [here ('Advanced DCOS installation procedure for the open source version)'](https://docs.mesosphere.com/1.11/installing/oss/custom/advanced/): there will be a __bootstrap__ node, which will be used to jumpstart the installation of the nodes on the cluster (master or agents). Additional examples for the Mesos cluster configuration file are available [here](https://docs.mesosphere.com/1.11/installing/ent/custom/configuration/examples/).
 
-Start to configure the bootstrap node: use the files under the ``genconf`` subdirectory on this repo:
+Apart from the ``cluster.yaml``, which contains the configuration of the DC/OS cluster, the other important piece is the ``ip-detect`` script:  it reports the IP address of each node across the cluster. Each node in a DC/OS cluster has a unique IP address that is used to communicate between nodes in the cluster. The IP detect script prints the unique IPv4 address of a node to STDOUT each time DC/OS is started on the node. There are different ways to gather these IPs: the script can use the AWS or GCE metadata servers, be juse a shell script, etc. The advanced DC/OS installation guide reports all the approach.
+
+__Start to configure the bootstrap node__: use the files under the ``genconf`` subdirectory on this repo:
 
 1. Login as root and create a ``genconf`` subdirectory (e.g. under ``/root``).
 2. Download the DC/OS installer: ``curl -O https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh``
 3. Launch the installer: ``bash dcos_generate_config.sh`` (**NOTE**: Docker should be already installed and running before this step).
-4. Run the Docker container which will use NGINX to serve the DC/OS installation: ``docker run -d -p 8080:80 -v $PWD/genconf/serve:/usr/share/nginx/html:ro nginx``
+4. Run the Docker container which will use NGINX to serve the DC/OS installation:  
+``docker run -d -p 8080:80 -v $PWD/genconf/serve:/usr/share/nginx/html:ro nginx``
 
-Refer to the [documentation](https://docs.mesosphere.com/1.11/installing/oss/custom/configuration/configuration-parameters) to get an idea about the parameters used in the ``genconf/cluster.yaml``. **NOTE**: one or more wrongly configured paramters will affect the correct functioning of the master or the agent nodes. In this case the nodes have to be **wiped** and the procedure to create and serve the DC/OS components from the bootstrap node has to be __restarted from scratch__.
+Refer to the [documentation](https://docs.mesosphere.com/1.11/installing/oss/custom/configuration/configuration-parameters) to get an idea about the parameters used in the ``genconf/cluster.yaml``.  
+**NOTE**: one or more wrongly configured paramters will affect the correct functioning of the master or the agent nodes. In this case the nodes have to be **wiped** and the procedure to create and serve the DC/OS components from the bootstrap node has to be __restarted from scratch__.
 
 Start the installation procedure on a node which is meant to join the cluster (broken down in three steps):
 
