@@ -47,13 +47,13 @@ Start the installation procedure on a node which is meant to join the cluster (b
     yum -y install bind-utils.x86_64; \
     yum -y install yum-utils device-mapper-persistent-data lvm2 ; \
     yum-config-manager --add-repo  https://download.docker.com/linux/centos/docker-ce.repo ; \ 
+    systemctl stop firewalld.service & systemctl disable firewalld.service; \ 
     yum install docker-ce ; systemctl start docker.service
 ```
 
 - Start the installer from the DCOS bootstrap node:
 ```bash
 >>> groupadd nogroup; mkdir /tmp/dcos && cd /tmp/dcos ; \
-    systemctl stop firewalld.service & systemctl disable firewalld.service; \ 
     curl -O http://10.1.1.8:8080/dcos_install.sh; \
     bash dcos_install.sh master # or slave
 ```
