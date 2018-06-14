@@ -20,6 +20,8 @@ Summary: in the open source version, the following features **are not available*
     - No Public Key Infrastructure w/ Custom CA.
 - Support for emergency patching.
 
+A complete diagram of the __DC/OS components__, which also highlights the difference between the enterprise and the open source version, is available [here](https://docs.mesosphere.com/1.11/overview/architecture/components/).
+
 ## Nodes distribution
 
 Node         | Description
