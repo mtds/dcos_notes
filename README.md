@@ -54,7 +54,7 @@ Start the installation procedure on a node which is meant to join the cluster (b
 IPtables status after Docker is installed and firewalld disabled (output adjusted to be more clear):
 ```bash
 >>> iptables -VNL
-hain INPUT (policy ACCEPT 29 packets, 2795 bytes)
+Chain INPUT (policy ACCEPT 29 packets, 2795 bytes)
  pkts bytes target     prot opt in     out     source               destination         
 
 Chain FORWARD (policy DROP 0 packets, 0 bytes)
@@ -90,13 +90,14 @@ Chain DOCKER-USER (1 references)
 **NOTE**: firewall issues may hamper the installation process and stop services from starting or communicating with peer nodes (e.g. Zookeeper).
 
 - Start the installer from the DCOS bootstrap node:
+
 ```bash
 >>> groupadd nogroup; mkdir /tmp/dcos && cd /tmp/dcos ; \
     curl -O http://10.1.1.8:8080/dcos_install.sh; \
     bash dcos_install.sh master # or slave
 ```
 
-Output:
+Output (master):
 ```
 Starting DC/OS Install Process
 Running preflight checks
@@ -144,6 +145,39 @@ Creating role file for master
 Configuring DC/OS   
 Setting and starting DC/OS
 Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.service to /etc/systemd/system/dcos-setup.service. 
+```
+
+Output (slave):
+```
+Running preflight checks
+Checking if DC/OS is already installed: PASS (Not installed)
+PASS Is SELinux disabled?
+Checking if docker is installed and in PATH: PASS 
+Checking docker version requirement (>= 1.6): PASS (18.03.1-ce)
+Checking if curl is installed and in PATH: PASS 
+Checking if bash is installed and in PATH: PASS 
+Checking if ping is installed and in PATH: PASS 
+Checking if tar is installed and in PATH: PASS 
+Checking if xz is installed and in PATH: PASS 
+Checking if unzip is installed and in PATH: PASS 
+Checking if ipset is installed and in PATH: PASS 
+Checking if systemd-notify is installed and in PATH: PASS 
+Checking if systemd is installed and in PATH: PASS 
+Checking systemd version requirement (>= 200): PASS (219)
+Checking if group 'nogroup' exists: PASS 
+Checking if port 53 (required by dcos-net) is in use: PASS 
+Checking if port 5051 (required by mesos-agent) is in use: PASS 
+Checking if port 61001 (required by agent-adminrouter) is in use: PASS 
+Checking if port 61091 (required by dcos-metrics) is in use: PASS 
+Checking if port 61420 (required by dcos-net) is in use: PASS 
+Checking if port 62080 (required by dcos-net) is in use: PASS 
+Checking if port 62501 (required by dcos-net) is in use: PASS 
+Checking Docker is configured with a production storage driver: PASS (overlay2)
+Creating directories under /etc/mesosphere
+Creating role file for slave
+Configuring DC/OS
+Setting and starting DC/OS
+Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.service to /etc/systemd/system/dcos-setup.service.
 ```
 
 ## Uninstall DC/OS
