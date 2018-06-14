@@ -24,6 +24,8 @@ A complete diagram of the __DC/OS components__, which also highlights the differ
 
 ## Nodes distribution
 
+All the VMs are created with the [vm-tools](https://github.com/vpenso/vm-tools) toolchain.
+
 Node         | Description
 -------------|-------------------------------
 lxcm02       | DC/OS bootstrap node
@@ -52,7 +54,7 @@ According to ['System Requirements'](https://docs.mesosphere.com/1.11/installing
 
 Follow the steps described [here ('Advanced DCOS installation procedure for the open source version)'](https://docs.mesosphere.com/1.11/installing/oss/custom/advanced/): there will be a __bootstrap__ node, which will be used to jumpstart the installation of the nodes on the cluster (master or agents). Additional examples for the Mesos cluster configuration file are available [here](https://docs.mesosphere.com/1.11/installing/ent/custom/configuration/examples/).
 
-Apart from the ``cluster.yaml``, which contains the configuration of the DC/OS cluster, the other important piece is the ``ip-detect`` script:  it reports the IP address of each node across the cluster. Each node in a DC/OS cluster has a unique IP address that is used to communicate between nodes in the cluster. The IP detect script prints the unique IPv4 address of a node to STDOUT each time DC/OS is started on the node. There are different ways to gather these IPs: the script can use the AWS or GCE metadata servers, be juse a shell script, etc. The advanced DC/OS installation guide reports all the approach.
+Apart from the ``cluster.yaml``, which contains the configuration of the DC/OS cluster, the other important piece is the ``ip-detect`` script:  it reports the IP address of each node across the cluster. Each node in a DC/OS cluster has a unique IP address that is used to communicate between nodes in the cluster. The IP detect script prints the unique IPv4 address of a node to STDOUT each time DC/OS is started on the node. There are different ways to gather these IPs: the script can use the AWS or GCE metadata servers, be juse a shell script, etc. The advanced DC/OS installation guide reports all the approaches.
 
 __Start to configure the bootstrap node__: use the files under the ``genconf`` subdirectory on this repo:
 
@@ -67,7 +69,7 @@ Refer to the [documentation](https://docs.mesosphere.com/1.11/installing/oss/cus
 
 Start the installation procedure on a node which is meant to join the cluster (broken down in three steps):
 
-- Install dependencies for the DCOS installed and then install and start Docker:
+- Install dependencies for DC/OS and then install and start Docker:
 
 ```bash
 >>> yum -y install unzip.x86_64 ; \
@@ -118,13 +120,15 @@ Chain DOCKER-USER (1 references)
 
 Additional information about DC/OS networking is available in the [docs (networking mode, load balancing, etc.)](https://docs.mesosphere.com/1.11/networking/).
 
-- Start the installer from the DCOS bootstrap node:
+- Start the DC/OS installer from the bootstrap node:
 
 ```bash
 >>> groupadd nogroup; mkdir /tmp/dcos && cd /tmp/dcos ; \
     curl -O http://10.1.1.8:8080/dcos_install.sh; \
     bash dcos_install.sh master # or slave
 ```
+
+**NOTE**: do not proceed to install the slave nodes until you have a fully functional and responsive Zookeeper cluster.
 
 Output (master):
 ```
@@ -211,7 +215,7 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.serv
 
 ## Operations
 
-Check all the service components on the master nodes:
+Check all the DC/OS service components on the master nodes:
 ```bash
 >>> journalctl -u dcos-exhibitor -b
 [...]
