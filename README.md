@@ -1,5 +1,7 @@
 # DC/OS
 
+Scope of this document is to create a cluster of VMs (KVM/LibVirt based), which is able to run [Mesosphere DC/OS](https://mesosphere.com/).
+
 ## What is DC/OS?
 
 DC/OS (the datacenter operating system) is an open-source, distributed operating system based on the Apache Mesos distributed systems kernel. DC/OS manages multiple machines in the cloud or on-premises from a single interface; deploys containers, distributed services, and legacy applications into those machines; and provides networking, service discovery and resource management to keep the services running and communicating with each other.
@@ -67,7 +69,7 @@ __Start to configure the bootstrap node__: use the files under the ``genconf`` s
 Refer to the [documentation](https://docs.mesosphere.com/1.11/installing/oss/custom/configuration/configuration-parameters) to get an idea about the parameters used in the ``genconf/cluster.yaml``.  
 **NOTE**: one or more wrongly configured paramters will affect the correct functioning of the master or the agent nodes. In this case the nodes have to be **wiped** and the procedure to create and serve the DC/OS components from the bootstrap node has to be __restarted from scratch__.
 
-Start the installation procedure on a node which is meant to join the cluster (broken down in three steps):
+__Start the installation procedure on a node which is meant to join the cluster__: it's broken down in three steps.
 
 - Install dependencies for DC/OS and then install and start Docker:
 
@@ -130,7 +132,7 @@ Additional information about DC/OS networking is available in the [docs (network
 
 **NOTE**: do not proceed to install the slave nodes until you have a fully functional and responsive Zookeeper cluster.
 
-Output (master):
+Output of the installation process (master):
 ```
 Starting DC/OS Install Process
 Running preflight checks
@@ -180,7 +182,7 @@ Setting and starting DC/OS
 Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.service to /etc/systemd/system/dcos-setup.service. 
 ```
 
-Output (slave):
+Output of the installation process (slave):
 ```
 Running preflight checks
 Checking if DC/OS is already installed: PASS (Not installed)
@@ -215,7 +217,7 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.serv
 
 ## DC/OS command line examples
 
-Once the cluster is up and running, it's also possible to interact with DC/OS using the ``dcos`` command line interface, as explained [here](https://docs.mesosphere.com/1.11/cli/). **NOTE**: since the deployment scenario in this document keep things as simple as possible, there is no authentication mechanism to interact with the DC/OS dashboard.
+Once the cluster is up and running, it's also possible to interact with DC/OS using the ``dcos`` command line interface, as explained [here](https://docs.mesosphere.com/1.11/cli/). After the installation, a subdirectory called ``.dcos`` will be created under ``$HOME``. **NOTE**: since the deployment scenario in this document keep things as simple as possible, there is no authentication mechanism to interact with the DC/OS dashboard.
 
 1. Connect to your DC/OS virtual cluster: ``dcos cluster setup http://10.1.1.49`` (no output will be reported if successfully connected)
 2. Shows information about the cluster:
@@ -225,7 +227,25 @@ Once the cluster is up and running, it's also possible to interact with DC/OS us
    NAME                 CLUSTER ID                 STATUS   VERSION        URL
 dcos_gsi*  7231c375-2f80-4727-a516-4737d7c253af  AVAILABLE   1.11.2  http://10.1.1.49
 ```
-3. Shows information about the Marathon scheduler:
+3. Shows masters and slaves (agents) nodes:
+
+```bash
+>>> dcos node
+HOSTNAME        IP                        ID                       TYPE             REGION  ZONE  
+10.1.1.13      10.1.1.13  9928caa0-c66b-4fc6-8df6-6509034c7299-S0  agent             None   None  
+master.mesos.  10.1.1.49                    N/A                    master            N/A    N/A   
+master.mesos.  10.1.1.50                    N/A                    master            N/A    N/A   
+master.mesos.  10.1.1.51    13c1ba1f-3c71-4f89-8d4d-3387cb367fd5   master (leader)   None   None
+```
+4. Shows running services on the cluster:
+
+```bash
+>>> dcos service
+NAME          HOST    ACTIVE  TASKS  CPU  MEM  DISK  ID                                         
+marathon   10.1.1.50   True     0    0.0  0.0  0.0   9928caa0-c66b-4fc6-8df6-6509034c7299-0001  
+metronome  10.1.1.51   True     0    0.0  0.0  0.0   9928caa0-c66b-4fc6-8df6-6509034c7299-0000
+```
+5. Shows information about the Marathon scheduler:
 
 ```bash
 >>> dcos marathon about
