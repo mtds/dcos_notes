@@ -219,15 +219,15 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.serv
 
 Once the cluster is up and running, it's also possible to interact with DC/OS using the ``dcos`` command line interface, as explained [here](https://docs.mesosphere.com/1.11/cli/). After the installation, a subdirectory called ``.dcos`` will be created under ``$HOME``. **NOTE**: since the deployment scenario in this document keep things as simple as possible, there is no authentication mechanism to interact with the DC/OS dashboard.
 
-1. Connect to your DC/OS virtual cluster: ``dcos cluster setup http://10.1.1.49`` (no output will be reported if successfully connected)
-2. Shows information about the cluster:
+* Connect to your DC/OS virtual cluster: ``dcos cluster setup http://10.1.1.49`` (no output will be reported if successfully connected)
+* Shows information about the cluster:
 
 ```bash
 >>> dcos cluster list
    NAME                 CLUSTER ID                 STATUS   VERSION        URL
 dcos_gsi*  7231c375-2f80-4727-a516-4737d7c253af  AVAILABLE   1.11.2  http://10.1.1.49
 ```
-3. Shows masters and slaves (agents) nodes:
+* Shows masters and slaves (agents) nodes:
 
 ```bash
 >>> dcos node
@@ -237,7 +237,7 @@ master.mesos.  10.1.1.49                    N/A                    master       
 master.mesos.  10.1.1.50                    N/A                    master            N/A    N/A   
 master.mesos.  10.1.1.51    13c1ba1f-3c71-4f89-8d4d-3387cb367fd5   master (leader)   None   None
 ```
-4. Shows running services on the cluster:
+* Shows running services on the cluster:
 
 ```bash
 >>> dcos service
@@ -245,7 +245,7 @@ NAME          HOST    ACTIVE  TASKS  CPU  MEM  DISK  ID
 marathon   10.1.1.50   True     0    0.0  0.0  0.0   9928caa0-c66b-4fc6-8df6-6509034c7299-0001  
 metronome  10.1.1.51   True     0    0.0  0.0  0.0   9928caa0-c66b-4fc6-8df6-6509034c7299-0000
 ```
-5. Shows information about the Marathon scheduler:
+* Shows information about the Marathon scheduler:
 
 ```bash
 >>> dcos marathon about
