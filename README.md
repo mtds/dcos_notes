@@ -237,7 +237,21 @@ Check all the service components on the slave nodes:
 [...]
 ```
 
+Interact with DC/OS using the ``dcos`` command line interface, as explained [here](https://docs.mesosphere.com/1.11/cli/). **NOTE**: since the deployment scenario in this document keep things as simple as possible, there no authentication to interact with the DC/OS dashboard.
+
 ## Troubleshooting
+
+When troubleshooting problems with a DC/OS installation, you should explore the components in this sequence:
+
+1. Exhibitor
+2. Mesos master
+3. Mesos DNS
+4. DNS Forwarder
+5. DC/OS Marathon
+6. Jobs
+7. Admin Router
+
+Be sure to check that all services are up and healthy on the masters **before** checking the agents.
 
 References:
 - [DC/OS troubleshooting docs (Open Source version)](https://docs.mesosphere.com/1.11/installing/oss/troubleshooting/)
@@ -262,3 +276,9 @@ According to the [official documentation](https://docs.mesosphere.com/1.11/insta
 
 * [DCOS main website](https://dcos.io/)
 * [DCOS documentation](https://docs.mesosphere.com/1.11/)
+* [DCOS Design](https://docs.mesosphere.com/1.11/overview/design/)
+* [DCOS Cmd Line interface](https://docs.mesosphere.com/1.11/cli/)
+* [DCOS Tutorials about run and operate services on top of it](https://docs.mesosphere.com/1.11/tutorials/)
+* [DCOS Frequently Asked Questions](https://docs.mesosphere.com/1.11/installing/oss/faq/)
+* [DCOS Monitoring with Prometheus](https://docs.mesosphere.com/1.11/metrics/prometheus/)
+* [Building and Running Distributed Systems using Apache Mesos - Benjamin Hindman at ApacheCon NA (2014)](https://www.youtube.com/watch?v=hTcZGODnyf0)
