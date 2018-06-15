@@ -213,6 +213,94 @@ Setting and starting DC/OS
 Created symlink from /etc/systemd/system/multi-user.target.wants/dcos-setup.service to /etc/systemd/system/dcos-setup.service.
 ```
 
+## DC/OS command line examples
+
+Once the cluster is up and running, it's also possible to interact with DC/OS using the ``dcos`` command line interface, as explained [here](https://docs.mesosphere.com/1.11/cli/). **NOTE**: since the deployment scenario in this document keep things as simple as possible, there is no authentication mechanism to interact with the DC/OS dashboard.
+
+1. Connect to your DC/OS virtual cluster: ``dcos cluster setup http://10.1.1.49`` (no output will be reported if successfully connected)
+2. Shows information about the cluster:
+
+```bash
+>>> dcos cluster list
+   NAME                 CLUSTER ID                 STATUS   VERSION        URL
+dcos_gsi*  7231c375-2f80-4727-a516-4737d7c253af  AVAILABLE   1.11.2  http://10.1.1.49
+```
+3. Shows information about the Marathon scheduler:
+
+```bash
+>>> dcos marathon about
+{
+  "buildref": "f9d087d2fbad410adf512a08196206b302f417fb",
+  "elected": true,
+  "frameworkId": "9928caa0-c66b-4fc6-8df6-6509034c7299-0001",
+  "http_config": {
+    "http_port": 8080,
+    "https_port": 8443
+  },
+  "leader": "10.1.1.50:8080",
+  "marathon_config": {
+    "access_control_allow_origin": null,
+    "checkpoint": true,
+    "decline_offer_duration": 300000,
+    "default_network_name": "dcos",
+    "env_vars_prefix": null,
+    "executor": "//cmd",
+    "failover_timeout": 604800,
+    "features": [
+      "vips",
+      "task_killing",
+      "external_volumes",
+      "gpu_resources"
+    ],
+    "framework_name": "marathon",
+    "ha": true,
+    "hostname": "10.1.1.50",
+    "launch_token": 100,
+    "launch_token_refresh_interval": 30000,
+    "leader_proxy_connection_timeout_ms": 5000,
+    "leader_proxy_read_timeout_ms": 10000,
+    "local_port_max": 20000,
+    "local_port_min": 10000,
+    "master": "zk://zk-1.zk:2181,zk-2.zk:2181,zk-3.zk:2181,zk-4.zk:2181,zk-5.zk:2181/mesos",
+    "max_instances_per_offer": 100,
+    "mesos_bridge_name": "mesos-bridge",
+    "mesos_heartbeat_failure_threshold": 5,
+    "mesos_heartbeat_interval": 15000,
+    "mesos_leader_ui_url": "/mesos",
+    "mesos_role": "slave_public",
+    "mesos_user": "root",
+    "min_revive_offers_interval": 5000,
+    "offer_matching_timeout": 3000,
+    "on_elected_prepare_timeout": 180000,
+    "reconciliation_initial_delay": 15000,
+    "reconciliation_interval": 600000,
+    "revive_offers_for_new_apps": true,
+    "revive_offers_repetitions": 3,
+    "scale_apps_initial_delay": 15000,
+    "scale_apps_interval": 300000,
+    "store_cache": true,
+    "task_launch_confirm_timeout": 300000,
+    "task_launch_timeout": 86400000,
+    "task_lost_expunge_initial_delay": 300000,
+    "task_lost_expunge_interval": 30000,
+    "task_reservation_timeout": 20000,
+    "webui_url": null
+  },
+  "name": "marathon",
+  "version": "1.6.392",
+  "zookeeper_config": {
+    "zk": "zk://zk-1.zk:2181,zk-2.zk:2181,zk-3.zk:2181,zk-4.zk:2181,zk-5.zk:2181/marathon",
+    "zk_compression": true,
+    "zk_compression_threshold": 65536,
+    "zk_connection_timeout": 10000,
+    "zk_max_node_size": 1024000,
+    "zk_max_versions": 50,
+    "zk_session_timeout": 10000,
+    "zk_timeout": 10000
+  }
+}
+```
+
 ## Operations
 
 Check all the DC/OS service components on the master nodes:
@@ -236,8 +324,6 @@ Check all the service components on the slave nodes:
 >>> journalctl -u dcos-mesos-slave -b
 [...]
 ```
-
-Interact with DC/OS using the ``dcos`` command line interface, as explained [here](https://docs.mesosphere.com/1.11/cli/). **NOTE**: since the deployment scenario in this document keep things as simple as possible, there no authentication to interact with the DC/OS dashboard.
 
 ## Troubleshooting
 
